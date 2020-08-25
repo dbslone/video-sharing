@@ -8,7 +8,7 @@ module.exports = function(videoId) {
     })
 
     return new Promise((resolve, reject) => {
-        pg('videos').select('title').where({ id: videoId }).then((rows) => {
+        pg('videos').select(['title', 'folder']).where({ id: videoId }).then((rows) => {
             if (rows[0]) {
                 resolve(rows[0])
             } else {
