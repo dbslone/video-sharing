@@ -1,6 +1,7 @@
 /* eslint-disable new-cap */
 const {Command, flags} = require('@oclif/command')
 const ffmpeg = require('ffmpeg')
+const boxen = require('boxen')
 const chalk = require('chalk')
 const fs = require('fs')
 
@@ -9,28 +10,27 @@ class VideoUploadCommand extends Command {
     const {flags} = this.parse(VideoUploadCommand)
     const file = flags.file
     const connectionString = flags.conn
-    const cwd = process.cwd()
     const destination = flags.destination.replace(/\/$/, '')
     const epoch = Date.now()
     const exportDirectory = `${flags.destination}/videos/${epoch}`
-    const videoFileName = file.split('/').reduce((accum, f) => f, '').split('.')[0]
     
     if (!destination.endsWith('video-sharing-web/public')) {
       this.error('Destination should be the public directory of the video-sharing-web folder')
     }
 
     // Establish Postgres connection
-    var pg = require('knex')({
+    const pg = require('knex')({
       client: 'pg',
       connection: connectionString,
       searchPath: ['knex', 'public'],
     })
 
+    // Test Postgres connection string works and videos table existss
     this.log(chalk.yellow('Establishing connection to Postgres...'))
     await pg('videos').select(['title']).limit(1).then(() => {
       this.log(chalk.green('Connection established'))
     }).catch(() => {
-      this.error(chalk.red('Unable to establish connection to Postgres'))
+      this.error(chalk.red('Unable to establish connection to Postgres or the videos table may not exist'))
     })
 
     try {
@@ -50,37 +50,37 @@ class VideoUploadCommand extends Command {
         })
 
         // 4k export
-        this.log(chalk.yellow(`Exporting ${videoFileName}-4k.mp4 this may take a few moments...`))
-        video.addCommand('-b:v', '3M')
-        video.addCommand('-acodec', 'copy')
+        this.log(chalk.yellow(`Exporting ${epoch}-4k.mp4 this may take a few moments...`))
+        video.addCommand('-b:v', '3M') // Max video bitrate to reduce encoding times
+        video.addCommand('-acodec', 'copy') // Audo Codec
         video.addCommand('-movflags', 'faststart')
         video.setVideoSize('3840x2160', true, true, 'black')
-        await video.save(`${exportDirectory}/${videoFileName}-4k.mp4`)
-        this.log(chalk.green(`Export Complete: ${videoFileName}-4k.mp4`))
+        await video.save(`${exportDirectory}/${epoch}-4k.mp4`)
+        this.log(chalk.green(`Export Complete: ${epoch}-4k.mp4`))
 
         // 1080p export
-        this.log(chalk.yellow(`Exporting ${videoFileName}-1080p.mp4 this may take a few moments...`))
+        this.log(chalk.yellow(`Exporting ${epoch}-1080p.mp4 this may take a few moments...`))
         video.setVideoSize('1920x1080', true, true, 'black')
-        await video.save(`${exportDirectory}/${videoFileName}-1080p.mp4`)
-        this.log(chalk.green(`Export Complete: ${videoFileName}-1080p.mp4`))
+        await video.save(`${exportDirectory}/${epoch}-1080p.mp4`)
+        this.log(chalk.green(`Export Complete: ${epoch}-1080p.mp4`))
 
         // 720p export
-        this.log(chalk.yellow(`Exporting ${videoFileName}-720p.mp4 this may take a few moments...`))
+        this.log(chalk.yellow(`Exporting ${epoch}-720p.mp4 this may take a few moments...`))
         video.setVideoSize('1280x720', true, true, 'black')
-        await video.save(`${exportDirectory}/${videoFileName}-720p.mp4`)
-        this.log(chalk.green(`Export Complete: ${videoFileName}-720p.mp4`))
+        await video.save(`${exportDirectory}/${epoch}-720p.mp4`)
+        this.log(chalk.green(`Export Complete: ${epoch}-720p.mp4`))
 
         // 480p export
-        this.log(chalk.yellow(`Exporting ${videoFileName}-480p.mp4 this may take a few moments...`))
+        this.log(chalk.yellow(`Exporting ${epoch}-480p.mp4 this may take a few moments...`))
         video.setVideoSize('854x480', true, true, 'black')
-        await video.save(`${exportDirectory}/${videoFileName}-480p.mp4`)
-        this.log(chalk.green(`Export Complete: ${videoFileName}-480p.mp4`))
+        await video.save(`${exportDirectory}/${epoch}-480p.mp4`)
+        this.log(chalk.green(`Export Complete: ${epoch}-480p.mp4`))
 
         // 240p export
-        this.log(chalk.yellow(`Exporting ${videoFileName}-240p.mp4 this may take a few moments...`))
+        this.log(chalk.yellow(`Exporting ${epoch}-240p.mp4 this may take a few moments...`))
         video.setVideoSize('426x240', true, true, 'black')
-        await video.save(`${exportDirectory}/${videoFileName}-240p.mp4`)
-        this.log(chalk.green(`Export Complete: ${videoFileName}-240p.mp4`))
+        await video.save(`${exportDirectory}/${epoch}-240p.mp4`)
+        this.log(chalk.green(`Export Complete: ${epoch}-240p.mp4`))
       })
     } catch (error) {
       this.log(error)
@@ -90,6 +90,15 @@ class VideoUploadCommand extends Command {
         this.error(error.message)
       }
     }
+
+    // Insert record into DB
+    await pg('videos').insert({title: flags.title, folder: `${epoch}`}).returning(['id']).then(rows => {
+      this.log(chalk.green('Postgres: Record inserted sucessfully'))
+      const text = chalk.green(`Media URL: http://localhost:5000/${rows[0].id}`)
+      this.log(boxen(text, {padding: 1}))
+    }).catch(error => {
+      this.error(`Postgres: Unable to insert record into table: ${error.message}`)
+    })
 
     this.exit()
   }
@@ -119,6 +128,11 @@ VideoUploadCommand.flags = {
     char: 'c',
     description: 'Postgres connection string',
     default: 'postgresql://localhost/video-sharing',
+  }),
+  title: flags.string({
+    char: 't',
+    description: 'Title of video',
+    required: true,
   }),
 }
 
