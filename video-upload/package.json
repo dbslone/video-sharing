@@ -1,0 +1,50 @@
+{
+  "name": "video-upload",
+  "version": "0.0.1",
+  "author": "David Slone @dbslone",
+  "bin": {
+    "video-upload": "./bin/run"
+  },
+  "bugs": "https://github.com/dbslone/video-upload/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^3",
+    "chalk": "^4.1.0",
+    "ffmpeg": "^0.0.4",
+    "knex": "^0.21.5",
+    "pg": "^8.3.2"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/test": "^1",
+    "chai": "^4",
+    "eslint": "^5.13",
+    "eslint-config-oclif": "^3.1",
+    "mocha": "^5",
+    "nyc": "^14"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "homepage": "https://github.com/dbslone/video-upload",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "bin": "video-upload"
+  },
+  "repository": "dbslone/video-upload",
+  "scripts": {
+    "posttest": "eslint .",
+    "prepack": "oclif-dev readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
