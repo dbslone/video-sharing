@@ -94,7 +94,7 @@ class VideoUploadCommand extends Command {
     // Insert record into DB
     await pg('videos').insert({title: flags.title, folder: `${epoch}`}).returning(['id']).then(rows => {
       this.log(chalk.green('Postgres: Record inserted sucessfully'))
-      const text = chalk.green(`Media URL: http://localhost:5000/${rows[0].id}`)
+      const text = chalk.green(`Media URL: http://localhost:3000/${rows[0].id}`)
       this.log(boxen(text, {padding: 1}))
     }).catch(error => {
       this.error(`Postgres: Unable to insert record into table: ${error.message}`)
