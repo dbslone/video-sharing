@@ -49,16 +49,38 @@ class VideoUploadCommand extends Command {
           this.log(chalk.green(`Created directory ${exportDirectory}`))
         })
 
-        // video.setVideoFormat('h264')
+        // 4k export
+        this.log(chalk.yellow(`Exporting ${videoFileName}-4k.mp4 this may take a few moments...`))
         video.addCommand('-b:v', '3M')
         video.addCommand('-acodec', 'copy')
-        video.addCommand('-vcodec', 'copy')
         video.addCommand('-movflags', 'faststart')
-        video.setVideoSize('3840x?', true, true, 'black')
+        video.setVideoSize('3840x2160', true, true, 'black')
         await video.save(`${exportDirectory}/${videoFileName}-4k.mp4`)
-        .then((error, file) => {
-          console.log('conversion complete')
-        })
+        this.log(chalk.green(`Export Complete: ${videoFileName}-4k.mp4`))
+
+        // 1080p export
+        this.log(chalk.yellow(`Exporting ${videoFileName}-1080p.mp4 this may take a few moments...`))
+        video.setVideoSize('1920x1080', true, true, 'black')
+        await video.save(`${exportDirectory}/${videoFileName}-1080p.mp4`)
+        this.log(chalk.green(`Export Complete: ${videoFileName}-1080p.mp4`))
+
+        // 720p export
+        this.log(chalk.yellow(`Exporting ${videoFileName}-720p.mp4 this may take a few moments...`))
+        video.setVideoSize('1280x720', true, true, 'black')
+        await video.save(`${exportDirectory}/${videoFileName}-720p.mp4`)
+        this.log(chalk.green(`Export Complete: ${videoFileName}-720p.mp4`))
+
+        // 480p export
+        this.log(chalk.yellow(`Exporting ${videoFileName}-480p.mp4 this may take a few moments...`))
+        video.setVideoSize('854x480', true, true, 'black')
+        await video.save(`${exportDirectory}/${videoFileName}-480p.mp4`)
+        this.log(chalk.green(`Export Complete: ${videoFileName}-480p.mp4`))
+
+        // 240p export
+        this.log(chalk.yellow(`Exporting ${videoFileName}-240p.mp4 this may take a few moments...`))
+        video.setVideoSize('426x240', true, true, 'black')
+        await video.save(`${exportDirectory}/${videoFileName}-240p.mp4`)
+        this.log(chalk.green(`Export Complete: ${videoFileName}-240p.mp4`))
       })
     } catch (error) {
       this.log(error)
