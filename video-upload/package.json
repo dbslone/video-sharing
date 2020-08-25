@@ -10,6 +10,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3",
+    "boxen": "^4.2.0",
     "chalk": "^4.1.0",
     "ffmpeg": "^0.0.4",
     "knex": "^0.21.5",
