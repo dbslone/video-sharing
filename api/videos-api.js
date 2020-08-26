@@ -14,6 +14,8 @@ module.exports = function(videoId) {
             } else {
                 reject('Unable to find record')
             }
+        }).catch((e) => {
+            reject('Unable to find record')
         })
     })
 }
