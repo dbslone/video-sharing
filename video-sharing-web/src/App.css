@@ -19,3 +19,8 @@
 .NotFound p {
   margin-top: 5px;
 }
+
+.Home {
+  text-align: center;
+  margin-top: 140px;
+}

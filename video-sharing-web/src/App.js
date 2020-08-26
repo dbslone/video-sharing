@@ -11,6 +11,11 @@ function App() {
   return (
     <div className="App-container">
       <Router>
+        <Route path="/" exact>
+          <div className="Home">
+            <h1>Welcome</h1>
+          </div>
+        </Route>
         <Route path="/video/:videoId">
           <VideoPlayer />
         </Route>
