@@ -3,10 +3,12 @@ import { useParams, useHistory } from 'react-router-dom'
 
 import './VideoPlayer.css'
 
+const videoOptions = ['4k', '1080p', '720p', '480p', '240p']
+
 export default () => {
     const { videoId } = useParams()
     const [video, setVideo] = useState({})
-    const [version, setVersion] = useState('480p')
+    const [version, setVersion] = useState(videoOptions[3])
     const history = useHistory()
     const videoEl = useRef(null)
 
@@ -41,11 +43,9 @@ export default () => {
                     <source src={`/videos/${video.folder}/${video.folder}-${version}.mp4`} type="video/mp4" />
                 </video>
                 <select onChange={(e) => setVersion(e.target.value)} value={version}>
-                    <option value="4k">4k</option>
-                    <option value="1080p">1080p</option>
-                    <option value="720p">720p</option>
-                    <option value="480p">480p</option>
-                    <option value="240p">240p</option>
+                    {videoOptions.map((el) => (
+                        <option key={el} value={el}>{el}</option>
+                    ))}
                 </select>
             </section>            
         </div>
