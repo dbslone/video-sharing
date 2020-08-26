@@ -34,7 +34,7 @@ class VideoUploadCommand extends Command {
     })
 
     try {
-      const process = await new ffmpeg(file)
+      const process = await new ffmpeg(file, {maxBuffer: 400 * 1024})
       .then(async video => {
         const resolution = video.metadata.video.resolution
         if (resolution.w < 3840 && resolution.h < 2160) {
@@ -51,7 +51,7 @@ class VideoUploadCommand extends Command {
 
         // 4k export
         this.log(chalk.yellow(`Exporting ${epoch}-4k.mp4 this may take a few moments...`))
-        video.addCommand('-b:v', '3M') // Max video bitrate to reduce encoding times
+        video.addCommand('-b:v', '2M') // Max video bitrate to reduce encoding times
         video.addCommand('-acodec', 'copy') // Audo Codec
         video.addCommand('-movflags', 'faststart')
         video.setVideoSize('3840x2160', true, true, 'black')
