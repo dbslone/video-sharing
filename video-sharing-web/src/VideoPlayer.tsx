@@ -3,14 +3,18 @@ import { useParams, useHistory } from 'react-router-dom'
 
 import './VideoPlayer.css'
 
+interface RouteParams {
+    videoId: string
+}
+
 const videoOptions = ['4k', '1080p', '720p', '480p', '240p']
 
 export default () => {
-    const { videoId } = useParams()
-    const [video, setVideo] = useState({})
+    const { videoId } = useParams<RouteParams>()
+    const [video, setVideo] = useState({ title: '', folder: ''})
     const [version, setVersion] = useState(videoOptions[3])
     const history = useHistory()
-    const videoEl = useRef(null)
+    const videoEl = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
         fetch(`http://localhost:3001/videos/${videoId}`).then((resp) => {
