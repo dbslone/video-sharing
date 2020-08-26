@@ -1,0 +1,32 @@
+.VideoPlayer-container {
+    padding-top: 40px;
+}
+
+.VideoPlayer-container header {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 0.03px;
+    font-weight: 500;
+}
+
+.VideoPlayer-container section {
+    width: 100%;
+}
+
+.VideoPlayer-container video {
+    width: 100%;
+}
+
+.VideoPlayer-container video:focus, .VideoPlayer-container select:focus { 
+    outline: none;
+}
+
+.VideoPlayer-container select {
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+    text-align-last: center;
+    -moz-text-align-last: center;
+    padding: 5px 0;
+}
