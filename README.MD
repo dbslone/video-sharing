@@ -68,7 +68,7 @@ To uninstall the script: `npm uninstall -g video-upload`
 
 The video upload script requires that the input source be at least a 4k video it will then create 240p, 480p, 1080p and 4k and upload them to the video-sharing-web public folder where they will accessible by the web app.
 
-NOTE: Since transcoding to different codecs could increase the time for conversion significantly the script also assumed you are providing a source codec that will play in a web browser.
+NOTE: Since transcoding to different codecs could increase the time for conversion significantly the script also assumes you are providing a source codec that will play in a web browser.
 
 Once the script completes sucessfully it will provide a media url. Once the web server is up and running you can use this url to view the uploaded content.
 
