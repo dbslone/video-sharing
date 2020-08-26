@@ -33,9 +33,9 @@ export default () => {
             // Reload video player when changing quality
             videoEl.current.load()
         }
-    }, [version])
+    }, [version, video])
 
-    if (Object.keys(video).length === 0) {
+    if (video.title.length === 0) {
         return null
     }
 
