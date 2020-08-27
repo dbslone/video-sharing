@@ -14,11 +14,11 @@ class VideoUploadCommand extends Command {
     const epoch = Date.now()
     const exportDirectory = `${flags.destination}/videos/${epoch}`
 
-    await fs.readFile(file, fs.F_OK, err => {
-      if (err) {
-        this.error('Unable to find video. Check to make sure the path is correct.')
-      }
-    })
+    try {
+      await fs.promises.access(file)
+    } catch (error) {
+      this.error('Unable to find video file. Check the path provided to the -f flag')
+    }
 
     if (!destination.endsWith('video-sharing-web/public')) {
       this.error('Destination should be the public directory of the video-sharing-web folder')
